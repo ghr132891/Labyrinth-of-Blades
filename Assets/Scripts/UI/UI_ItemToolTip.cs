@@ -22,7 +22,7 @@ public class UI_ItemToolTip : UI_ToolTip
         if (item.itemData.itemType == ItemType.Material)
             return "Used for Crafting.";
 
-        if(item.itemData.itemType == ItemType.Consumable)
+        if (item.itemData.itemType == ItemType.Consumable)
             return item.itemData.itemEffect.effectdescription;
 
         StringBuilder sb = new StringBuilder();
@@ -32,8 +32,15 @@ public class UI_ItemToolTip : UI_ToolTip
         foreach (var mod in item.Modifiers)
         {
             string modType = GetStatNameByType(mod.statType);
-            string modValue = IsPercentageStat(mod.statType)? mod.value.ToString()+"%":mod.value.ToString();
+            string modValue = IsPercentageStat(mod.statType) ? mod.value.ToString() + "%" : mod.value.ToString();
             sb.AppendLine("+ " + modValue + " " + modType);
+        }
+
+        if (item.itemEffect != null)
+        {
+            sb.AppendLine("");
+            sb.AppendLine("Unique effect:");
+            sb.AppendLine(item.itemEffect.effectdescription);
         }
 
         return sb.ToString();

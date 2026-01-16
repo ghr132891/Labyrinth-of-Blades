@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,11 +15,11 @@ public class Inventory_Player : Inventory_Base
     public void TryEquipItem(Inventory_Item item)
     {
         var inventoryITem = FindItem(item.itemData);
-        var matchingSlots = equipmentList.FindAll(slot => slot.slotType == item.itemData.itemType); 
+        var matchingSlots = equipmentList.FindAll(slot => slot.slotType == item.itemData.itemType);
 
         foreach (var slot in matchingSlots)
         {
-            if(slot.HasItem() == false) 
+            if (slot.HasItem() == false)
             {
                 EquipItem(inventoryITem, slot);
                 return;
@@ -30,24 +29,26 @@ public class Inventory_Player : Inventory_Base
         var slotToReplace = matchingSlots[0];
         var itemToUnequip = slotToReplace.equipmentItem;
 
-        EquipItem(inventoryITem,slotToReplace);
-        UnequipItem(itemToUnequip);
+        UnequipItem(itemToUnequip, slotToReplace != null);
+        EquipItem(inventoryITem, slotToReplace);
 
     }
-    private void EquipItem(Inventory_Item itemToEquip,Inventory_EquipmentSlot slot)
+    private void EquipItem(Inventory_Item itemToEquip, Inventory_EquipmentSlot slot)
     {
         float savedHealthPercent = player.health.GetHealthPercent();
 
         slot.equipmentItem = itemToEquip;
         slot.equipmentItem.Addmodifiers(player.stats);
+        slot.equipmentItem.AddItemEffect(player);
+
 
         player.health.SetHealthToPercent(savedHealthPercent);
         RemoveItem(itemToEquip);
     }
 
-    public void UnequipItem(Inventory_Item itemToUnequip)
+    public void UnequipItem(Inventory_Item itemToUnequip, bool replacingItem = false)
     {
-        if(canAddItem() == false)
+        if (canAddItem() == false && replacingItem == false)
         {
             Debug.Log("No, Space.");
             return;
@@ -57,10 +58,13 @@ public class Inventory_Player : Inventory_Base
 
         var slotToUnequip = equipmentList.Find(slot => slot.equipmentItem == itemToUnequip);
 
-        if(slotToUnequip != null)
+        if (slotToUnequip != null)
             slotToUnequip.equipmentItem = null;
 
         itemToUnequip.RemoveModifiers(player.stats);
+        itemToUnequip.RemoveItemEffect();
+
+
 
         player.health.SetHealthToPercent(savedHealthPercent);
         AddItem(itemToUnequip);

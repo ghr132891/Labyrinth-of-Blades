@@ -4,7 +4,7 @@ public class ItemEffect_DataSo : ScriptableObject
 {
     [TextArea]
     public string effectdescription;
-
+    protected Player player;
     public virtual bool CanBeUsed()
     {
         return true;
@@ -15,4 +15,13 @@ public class ItemEffect_DataSo : ScriptableObject
           
     }
 
+    public virtual void Subsribe(Player play)
+    {
+        this.player = play;
+    }
+
+    public virtual void Unsubribe()
+    {
+
+    }
 }

@@ -38,6 +38,8 @@ public class Inventory_Item
         }
     }
 
+    public void AddItemEffect(Player player) => itemEffect?.Subsribe(player);
+    public void RemoveItemEffect() => itemEffect?.Unsubribe();
     private EquipmentDataSo EquipmentData()
     {
         if (itemData is EquipmentDataSo equipment)

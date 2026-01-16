@@ -10,6 +10,7 @@ public class Player : Entity
     public Player_VFX vfx { get; private set; }
     public Entity_Health health { get; private set; }
     public Entity_StatusHandler statusHandler { get; private set; }
+    public Player_Combat combat { get; private set; }
 
 
     public PlayerInputSet input { get; private set; }
@@ -71,6 +72,7 @@ public class Player : Entity
         vfx = GetComponent<Player_VFX>();
         health = GetComponent<Entity_Health>();
         statusHandler = GetComponent<Entity_StatusHandler>();
+        combat = GetComponent<Player_Combat>();
 
         input = new PlayerInputSet();
 
