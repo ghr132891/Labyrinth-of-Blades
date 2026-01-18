@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: b92677e09f6643a46a83e55ec51b1a6d
+guid: ad0f8cd6df782604ca0ce2ae2fa55b11
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5457132565505971404
-    second: artdecoUI_PIPO_wb_0
+      213: 1440231860608163594
+    second: Blacksmith Corner_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: artdecoUI_PIPO_wb_0
+      name: Blacksmith Corner_0
       rect:
         serializedVersion: 2
-        x: 992
-        y: 582
-        width: 56
-        height: 52
+        x: 63
+        y: 143
+        width: 911
+        height: 653
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cc4133bb721abbb40800000000000000
-      internalID: 5457132565505971404
+      spriteID: a0fdfbd1f3bbcf310800000000000000
+      internalID: 1440231860608163594
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 4c15cf0846cca1c41bc17bf0f72b76d8
+    spriteID: 9f0f2c9bf2bf3d9438dca7d81133761d
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      artdecoUI_PIPO_wb_0: 5457132565505971404
+      Blacksmith Corner_0: 1440231860608163594
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
