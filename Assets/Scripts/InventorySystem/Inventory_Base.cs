@@ -11,34 +11,38 @@ public class Inventory_Base : MonoBehaviour
 
     protected virtual void Awake()
     {
-        
+
     }
     public void TryUseItem(Inventory_Item ItemToUse)
     {
-        Inventory_Item consumable = itemList.Find(item => item == ItemToUse); 
+        Inventory_Item consumable = itemList.Find(item => item == ItemToUse);
 
-        if(consumable == null)
+        if (consumable == null)
             return;
 
         consumable.itemEffect.ExecuteEffect();
 
-        if(consumable.stackSize > 1)
+        if (consumable.stackSize > 1)
             consumable.RemoveStack();
         else
-            RemoveItem(consumable);
+            RemoveOneItem(consumable);
 
-        OnInventoryChange?.Invoke(); 
+        OnInventoryChange?.Invoke();
 
     }
-    public bool canAddItem() => itemList.Count < maxInventorySize;
-    
-    public Inventory_Item StackableItem(Inventory_Item itemToAdd)
+    public bool canAddItem(Inventory_Item itemToAdd)
+    {
+        bool hasStackable = FindStackable(itemToAdd) != null;
+        return hasStackable || itemList.Count < maxInventorySize;
+    }
+
+    public Inventory_Item FindStackable(Inventory_Item itemToAdd)
     {
         List<Inventory_Item> stackableItems = itemList.FindAll(item => item.itemData == itemToAdd.itemData);
-        
-        foreach(var stackableItem in stackableItems)
+
+        foreach (var stackableItem in stackableItems)
         {
-            if(stackableItem.canAddStack())
+            if (stackableItem.canAddStack())
                 return stackableItem;
         }
         return null;
@@ -46,7 +50,7 @@ public class Inventory_Base : MonoBehaviour
 
     public virtual void AddItem(Inventory_Item itemToAdd)
     {
-        var existingStackable = StackableItem(itemToAdd);
+        var existingStackable = FindStackable(itemToAdd);
 
         if (existingStackable != null)
             existingStackable.AddStack();
@@ -56,15 +60,29 @@ public class Inventory_Base : MonoBehaviour
         OnInventoryChange?.Invoke();
     }
 
-    public void RemoveItem(Inventory_Item itemToRemove)
+    public void RemoveOneItem(Inventory_Item itemToRemove)
     {
-        itemList.Remove(itemToRemove);
+        Inventory_Item itemInInventory = itemList.Find(item => item == itemToRemove);
+
+        if (itemInInventory.stackSize > 1)
+            itemInInventory.RemoveStack();
+        else
+            itemList.Remove(itemToRemove);
+
         OnInventoryChange?.Invoke();
     }
 
-    public Inventory_Item FindItem(ItemDataSo itemData)
+    public void RemoveFullStack(Inventory_Item itemToRemove)
     {
-        return itemList.Find(item => item.itemData == itemData );
+        for (int i = 0; i < itemToRemove.stackSize; i++)
+        {
+            RemoveOneItem(itemToRemove);
+        }
+    }
+
+    public Inventory_Item FindItem(Inventory_Item itemToFind)
+    {
+        return itemList.Find(item => item == itemToFind);
     }
 
     public void TriggerUpdateUI() => OnInventoryChange?.Invoke();

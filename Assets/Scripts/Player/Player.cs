@@ -158,7 +158,7 @@ public class Player : Entity
     {
         Transform closest = null;
         float closestDistance = Mathf.Infinity;
-        Collider2D[] objectsAround = Physics2D.OverlapCircleAll(transform.position,1.5f);
+        Collider2D[] objectsAround = Physics2D.OverlapCircleAll(transform.position,1f);
 
         foreach(var target in objectsAround)
         {
