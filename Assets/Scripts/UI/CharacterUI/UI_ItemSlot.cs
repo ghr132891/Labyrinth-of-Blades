@@ -11,6 +11,7 @@ public class UI_ItemSlot : MonoBehaviour, IPointerDownHandler, IPointerEnterHand
     protected RectTransform rect;
 
     [Header("UI Slot SetUp")]
+    [SerializeField] protected GameObject defaultIcon;
     [SerializeField] protected Image itemIcon;
     [SerializeField] protected TextMeshProUGUI itemStackSize;
 
@@ -49,6 +50,9 @@ public class UI_ItemSlot : MonoBehaviour, IPointerDownHandler, IPointerEnterHand
     public void UpdateSlot(Inventory_Item item)
     {
         itemInSlot = item;
+        if (defaultIcon != null)
+            defaultIcon.gameObject.SetActive(itemInSlot == null);
+     
 
         if (itemInSlot == null)
         {

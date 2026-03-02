@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Reflection;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -10,6 +11,7 @@ public class UI_Inventory : MonoBehaviour
 
     [SerializeField] private UI_ItemSlotParent inventorySlotsParent;
     [SerializeField] private UI_EquipSlotParent equipSlotParent;
+    [SerializeField] private TextMeshProUGUI goldText;
 
    
 
@@ -27,6 +29,7 @@ public class UI_Inventory : MonoBehaviour
     {
         inventorySlotsParent.UpdateSlots(inventory.itemList);
         equipSlotParent.UpdateEquipmentsSlots(inventory.equipmentList);
+        goldText.text = inventory.gold.ToString() + "g.";
     }
 
     
