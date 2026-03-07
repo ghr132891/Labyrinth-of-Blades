@@ -102,4 +102,15 @@ public class Inventory_Player : Inventory_Base
         player.health.SetHealthToPercent(savedHealthPercent);
         AddItem(itemToUnequip);
     }
+
+    public override void SaveData(ref GameData gameData)
+    {
+        gameData.gold = gold;
+    }
+
+    public override void LoadData(GameData gameData)
+    {
+        gold = gameData.gold;
+    }
+
 }
