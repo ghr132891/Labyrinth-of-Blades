@@ -51,6 +51,7 @@ public class Entity_Health : MonoBehaviour, IDamagable
         OnHealthUpdate += UpdateHealthBar;
         UpdateHealthBar();
         InvokeRepeating(nameof(RengenerateHealth), 0, regenInterval);
+        
 
 
 

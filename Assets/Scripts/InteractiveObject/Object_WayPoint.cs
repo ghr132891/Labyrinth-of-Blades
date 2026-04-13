@@ -13,10 +13,11 @@ public class Object_WayPoint : MonoBehaviour
 
     public RespawnType GetWayPointType() => wayPointType;
 
-    public bool SetCanBeTriggered(bool canBeTriggered) => this.canBeTriggered = canBeTriggered;
+    //public bool SetCanBeTriggered(bool canBeTriggered) => this.canBeTriggered = canBeTriggered;
 
-    public Vector3 GetPosition()
+    public Vector3 GetPositionAndSetTriggerFalse()
     {
+        canBeTriggered = false;
         return respawnPoint == null ? transform.position : respawnPoint.position;
     }
     private void OnValidate()
@@ -35,7 +36,6 @@ public class Object_WayPoint : MonoBehaviour
         if (canBeTriggered == false)
             return;
 
-        SaveManager.instance.SaveGame();
         GameManager.instance.ChangeScene(transferToScene, connectedWayPoint);
 
 

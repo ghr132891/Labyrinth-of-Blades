@@ -174,7 +174,7 @@ public class Inventory_Player : Inventory_Base
             slot.equipmentItem.AddItemEffect(player);
         }
 
-        StartCoroutine(ApplyHealthBar(gameData.healthPercent));// set healthbar.
+        StartCoroutine(ApplyHealthBar(gameData.healthPercent == 0 ? 1 :gameData.healthPercent));// set healthbar.
         TriggerUpdateUI();
     }
 

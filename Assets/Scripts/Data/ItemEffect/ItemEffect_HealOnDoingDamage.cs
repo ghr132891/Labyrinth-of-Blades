@@ -9,15 +9,15 @@ public class ItemEffect_HealOnDoingDamage : ItemEffect_DataSo
     public override void Subsribe(Player play)
     {
         base.Subsribe(play);
-        play.combat.OnDoingPhysiclDamage += HealOnDOingDamage;
+        play.combat.OnDoingPhysiclDamage += HealOnDoingDamage;
     }
 
     public override void Unsubribe()
     {
-        player.combat.OnDoingPhysiclDamage -= HealOnDOingDamage;
+        player.combat.OnDoingPhysiclDamage -= HealOnDoingDamage;
         player = null;
     }
-    private void HealOnDOingDamage(float damage)
+    private void HealOnDoingDamage(float damage)
     {
         player.health.IncreaseHealth(damage * percentHealedOnAttack);
     }
