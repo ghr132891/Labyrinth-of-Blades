@@ -21,9 +21,10 @@ public class Enemy_BattleState : EnemyState
 
         if (ShouldRetreat())
         {
-            
-  
-            rb.linearVelocity = new Vector2((enemy.reteratVelocity.x * enemy.activeSlowMultiplier) * -DirectionToPlayer(), enemy.reteratVelocity.y);
+            // 【修改点】：不要直接用 rb.linearVelocity 赋值，统一使用 enemy.SetVelocity！
+            // 这样撤退也能应用底层反转和翻转贴图逻辑
+            enemy.SetVelocity((enemy.reteratVelocity.x * enemy.activeSlowMultiplier) * -DirectionToPlayer(), enemy.reteratVelocity.y);
+            //rb.linearVelocity = new Vector2((enemy.reteratVelocity.x * enemy.activeSlowMultiplier) * -DirectionToPlayer(), enemy.reteratVelocity.y);
 
             enemy.HandleFlip(DirectionToPlayer());
         }
@@ -100,7 +101,13 @@ public class Enemy_BattleState : EnemyState
         if (verticalDistance > .1f && horizonalDistance < 0.1f) 
             return 0;
 
-        return player.position.x > enemy.transform.position.x ? 1 : -1;
+        int dir = player.position.x > enemy.transform.position.x ? 1 : -1;
+
+        if (WorldManager.Instance != null && WorldManager.Instance.currentWorld == WorldType.Mirror)
+        {
+            dir = -dir;
+        }
+        return dir;
     }
 
 }

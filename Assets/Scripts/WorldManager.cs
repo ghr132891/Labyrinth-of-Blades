@@ -45,19 +45,26 @@ public class WorldManager : MonoBehaviour
             // 注意：如果玩家在时间世界要能动，需要把玩家身上的动画/物理更新模式改为 UnscaledTime 
             Player.instance.SetTimeImmunity(true);
         }
-        else if(currentWorld == WorldType.Mirror)
+
+        if (levelRoot != null)
         {
-            levelRoot.transform.localScale = new Vector3(-1, 1, 1);
-            Time.timeScale = 1f; // 恢复正常
-            Player.instance.SetTimeImmunity(false);
+
+            if (currentWorld == WorldType.Mirror)
+            {
+                levelRoot.transform.localScale = new Vector3(-1, 1, 1);
+                Time.timeScale = 1f; //恢复正常
+                Player.instance.SetTimeImmunity(false);
+            }
+            else
+            {
+                levelRoot.transform.localScale = new Vector3(1, 1, 1);
+                Time.timeScale = 1f; // 恢复正常
+                Player.instance.SetTimeImmunity(false);
+            }
         }
-        else
-        {
-            Time.timeScale = 1f; // 恢复正常
-            Player.instance.SetTimeImmunity(false);
-        }
+
     }
-        
-    }
+
+}
 
 

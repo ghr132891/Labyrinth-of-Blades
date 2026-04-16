@@ -114,7 +114,15 @@ public class Entity : MonoBehaviour
         if (isKnocked)
             return;
 
-        rb.linearVelocity = new Vector2(xVelocity, yVelocity);
+        float finalXVelocity = xVelocity;
+
+        if(WorldManager.Instance != null && WorldManager.Instance.currentWorld == WorldType.Mirror)
+        {
+            if(this.GetComponent<Player>() == null)
+                finalXVelocity = -xVelocity; 
+        }
+
+        rb.linearVelocity = new Vector2(finalXVelocity, yVelocity);
         HandleFlip(xVelocity);
     }
 
@@ -139,24 +147,40 @@ public class Entity : MonoBehaviour
     {
         groundDetected = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
 
-        if(secondaryWallCheck != null)
+        int actualFacingDir = facingDir;
+
+        if(WorldManager.Instance != null && WorldManager.Instance.currentWorld == WorldType.Mirror)
         {
-        wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround)
-                    && Physics2D.Raycast(secondaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
+            if (this.GetComponent<Player>() == null)
+            {
+                actualFacingDir = -facingDir;
+            }
+        }
+
+        if (secondaryWallCheck != null)
+        {
+        wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * actualFacingDir, wallCheckDistance, whatIsGround)
+                    && Physics2D.Raycast(secondaryWallCheck.position, Vector2.right * actualFacingDir, wallCheckDistance, whatIsGround);
         }
         else
-            wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
+            wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * actualFacingDir, wallCheckDistance, whatIsGround);
 
     }
 
     protected virtual void OnDrawGizmos() 
     {
+        int actualFacingDir = facingDir;
+        if (WorldManager.Instance != null && WorldManager.Instance.currentWorld == WorldType.Mirror)
+        {
+            actualFacingDir = -facingDir;
+        }
+
         Gizmos.DrawLine(groundCheck.position, groundCheck.position + new Vector3(0, -groundCheckDistance));
-        Gizmos.DrawLine(primaryWallCheck.position, primaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
+        Gizmos.DrawLine(primaryWallCheck.position, primaryWallCheck.position + new Vector3(wallCheckDistance * actualFacingDir, 0));
 
         if (secondaryWallCheck != null)
         {
-            Gizmos.DrawLine(secondaryWallCheck.position, secondaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
+            Gizmos.DrawLine(secondaryWallCheck.position, secondaryWallCheck.position + new Vector3(wallCheckDistance * actualFacingDir, 0));
         }
     }
 

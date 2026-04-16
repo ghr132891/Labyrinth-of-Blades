@@ -101,8 +101,14 @@ public class Enemy : Entity
     
     public RaycastHit2D PlayerDetected()
     {
+        int actualFacingDir = facingDir;
+        if (WorldManager.Instance != null && WorldManager.Instance.currentWorld == WorldType.Mirror)
+        {
+            actualFacingDir = -facingDir;
+        }
+
         RaycastHit2D hit = 
-            Physics2D.Raycast(playerCheck.position, Vector2.right * facingDir, playerCheckDistance, whatIsPlayer | whatIsGround);
+            Physics2D.Raycast(playerCheck.position, Vector2.right * actualFacingDir, playerCheckDistance, whatIsPlayer | whatIsGround);
 
         if (hit.collider == null || hit.collider.gameObject.layer != LayerMask.NameToLayer("Player"))
             return default;
@@ -112,12 +118,20 @@ public class Enemy : Entity
     protected override void OnDrawGizmos()
     {
         base.OnDrawGizmos();
+        int actualFacingDir = facingDir;
+
+        // 加上 Application.isPlaying，防止在编辑模式下报错
+        if (Application.isPlaying && WorldManager.Instance != null && WorldManager.Instance.currentWorld == WorldType.Mirror)
+        {
+            actualFacingDir = -facingDir;
+        }
+
         Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (facingDir * playerCheckDistance), playerCheck.position.y));
+        Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (actualFacingDir * playerCheckDistance), playerCheck.position.y));
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (facingDir * attackDistance), playerCheck.position.y));
+        Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (actualFacingDir * attackDistance), playerCheck.position.y));
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (facingDir * minAbleRetreatDistance), playerCheck.position.y));
+        Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (actualFacingDir * minAbleRetreatDistance), playerCheck.position.y));
     }
 
     private void OnEnable()
