@@ -7,6 +7,10 @@ public class WorldManager : MonoBehaviour
     public static WorldManager Instance;
     [SerializeField] private GameObject levelRoot;
 
+    [Header("区域翻转设置")]
+    [Tooltip("当前所在的区域中心点。如果不填，默认围绕 (0,0,0) 翻转")]
+    public Transform currentFlipCenter;
+
     [Header("世界切换设置")]
     [SerializeField] private float switchCooldown = 1f;
     private float lastSwitchTime = -Mathf.Infinity;
@@ -131,11 +135,47 @@ public class WorldManager : MonoBehaviour
             Player.instance.SetTimeImmunity(false);
         currentWorld = WorldType.Normal;
     }
+    // ======== 【核心修改：支持围绕任意中心点翻转】 ========
     private void ApplyWorldVisuals()
     {
-        if (levelRoot != null)
+        if (levelRoot == null) return;
+
+        // 获取当前的中心点 X 坐标
+        float centerX = currentFlipCenter != null ? currentFlipCenter.position.x : 0f;
+
+        bool wasMirrored = levelRoot.transform.localScale.x < 0;
+
+        if (isMirrored)
         {
-            levelRoot.transform.localScale = isMirrored ? new Vector3(-1, 1, 1) : new Vector3(1, 1, 1);
+            // 地图缩放翻转
+            levelRoot.transform.localScale = new Vector3(-1, 1, 1);
+            // 为了让指定区域看起来在原地翻转，我们需要把整个大地图平移 "2倍的中心点距离"
+            levelRoot.transform.position = new Vector3(2 * centerX, levelRoot.transform.position.y, levelRoot.transform.position.z);
+        }
+        else
+        {
+            // 恢复正常
+            levelRoot.transform.localScale = new Vector3(1, 1, 1);
+            levelRoot.transform.position = new Vector3(0, levelRoot.transform.position.y, levelRoot.transform.position.z);
+        }
+
+        // 同步玩家的位置
+        if (wasMirrored != isMirrored && Player.instance != null)
+        {
+            Vector3 playerPos = Player.instance.transform.position;
+
+            // 数学魔法：围绕 centerX 翻转玩家坐标
+            playerPos.x = (2 * centerX) - playerPos.x;
+
+            Player.instance.transform.position = playerPos;
+
+            Rigidbody2D rb = Player.instance.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f); // 防穿模
+            }
+
+            Debug.Log($"已围绕 X={centerX} 翻转地图。玩家传送到: {playerPos.x}");
         }
     }
 }
