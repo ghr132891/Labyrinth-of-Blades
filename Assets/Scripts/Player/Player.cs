@@ -81,6 +81,7 @@ public class Player : Entity
         base.Awake();
         instance = this;
 
+
         ui = FindAnyObjectByType<UI>();
         skillManager = GetComponent<Player_SkillManager>();
         vfx = GetComponent<Player_VFX>();
@@ -122,17 +123,23 @@ public class Player : Entity
     }
     public void TeleportPlayer(Vector3 position) => transform.position = position;
 
+    // 【新增】：获取受时间流速修正后的冲刺持续时间
+    public float GetDashDuration()
+    {
+        return dashDuration * (WorldManager.Instance.currentWorld == WorldType.Time ? WorldManager.Instance.timeWorldScale : 1f);
+    }
     private void ApplyWorldMovementLogic()
     {
         // 默认情况下，逻辑方向等于物理按键方向
         moveInput = rawMoveInput;
 
-
+        /*
         // 核心植入：镜像世界判定
         if (WorldManager.Instance != null && WorldManager.Instance.isMirrored)
         {
             moveInput = -moveInput;
         }
+        */
     }
 
     public void SetTimeImmunity(bool isImmune)

@@ -92,21 +92,23 @@ public class Enemy_BattleState : EnemyState
 
     protected int DirectionToPlayer()
     {
-        if(player == null)
+        if (player == null)
             return 0;
 
-        //检查敌人和玩家在空间上的距离，判断是否追击
         float verticalDistance = Mathf.Abs(player.position.y - enemy.transform.position.y);
         float horizonalDistance = Mathf.Abs(player.position.x - enemy.transform.position.x);
-        if (verticalDistance > .1f && horizonalDistance < 0.1f) 
+        if (verticalDistance > .1f && horizonalDistance < 0.1f)
             return 0;
 
         int dir = player.position.x > enemy.transform.position.x ? 1 : -1;
 
-        if (WorldManager.Instance != null && WorldManager.Instance.currentWorld == WorldType.Mirror)
+        // 【删除】底下这段代码！
+        /* if (WorldManager.Instance != null && WorldManager.Instance.currentWorld == WorldType.Mirror)
         {
             dir = -dir;
         }
+        */
+
         return dir;
     }
 

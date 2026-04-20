@@ -39,31 +39,39 @@ public class Entity : MonoBehaviour
 
         stateMachine = new StateMachine();
 
-        
+
 
     }
 
 
-   
+
 
     protected virtual void Start()
     {
-       
+
     }
 
     protected virtual void Update()
     {
         HandleCollisionDetection();
         stateMachine.UpdateActiveState();
+
+        if (WorldManager.Instance != null && this.GetComponent<Player>() == null)
+        {
+            if (WorldManager.Instance.isTimeStopped)
+                anim.speed = 0;
+            else if (anim.speed == 0) // 简单恢复，不会覆盖你原有的减速特效
+                anim.speed = 1 * (this is Enemy e ? e.activeSlowMultiplier : 1);
+        }
     }
 
     public virtual void StopSlowDown()
     {
         slowDownCo = null;
     }
-    public virtual void SlowDownEntity(float duration,float slowMultiplier,bool canOverrideSlowEffect = false)
+    public virtual void SlowDownEntity(float duration, float slowMultiplier, bool canOverrideSlowEffect = false)
     {
-        if(slowDownCo != null)
+        if (slowDownCo != null)
         {
             if (canOverrideSlowEffect)
                 StopCoroutine(slowDownCo);
@@ -71,11 +79,11 @@ public class Entity : MonoBehaviour
                 return;
         }
 
-        slowDownCo = StartCoroutine(SlowDownEntityCo(duration,slowMultiplier));
+        slowDownCo = StartCoroutine(SlowDownEntityCo(duration, slowMultiplier));
 
     }
 
-    protected virtual IEnumerator SlowDownEntityCo(float duration ,float slowMultiplier)
+    protected virtual IEnumerator SlowDownEntityCo(float duration, float slowMultiplier)
     {
         yield return null;
     }
@@ -91,16 +99,16 @@ public class Entity : MonoBehaviour
 
     }
 
-    public void ReceiveKnockback(Vector2 knockback,float duration)
+    public void ReceiveKnockback(Vector2 knockback, float duration)
     {
-        if(knockbackCo != null)
+        if (knockbackCo != null)
             StopCoroutine(knockbackCo);
 
-        knockbackCo = StartCoroutine(KnockbackCo(knockback,duration));
+        knockbackCo = StartCoroutine(KnockbackCo(knockback, duration));
 
     }
 
-    public IEnumerator KnockbackCo(Vector2 knockback,float duration)
+    public IEnumerator KnockbackCo(Vector2 knockback, float duration)
     {
         isKnocked = true;
         rb.linearVelocity = knockback;
@@ -114,15 +122,16 @@ public class Entity : MonoBehaviour
         if (isKnocked)
             return;
 
-        float finalXVelocity = xVelocity;
-
-        if(WorldManager.Instance != null && WorldManager.Instance.currentWorld == WorldType.Mirror)
+        if (WorldManager.Instance != null && WorldManager.Instance.isTimeStopped)
         {
-            if(this.GetComponent<Player>() == null)
-                finalXVelocity = -xVelocity; 
+            if (this.GetComponent<Player>() == null)
+            {
+                rb.linearVelocity = Vector2.zero;
+                return;
+            }
         }
 
-        rb.linearVelocity = new Vector2(finalXVelocity, yVelocity);
+        rb.linearVelocity = new Vector2(xVelocity, yVelocity);
         HandleFlip(xVelocity);
     }
 
@@ -147,42 +156,27 @@ public class Entity : MonoBehaviour
     {
         groundDetected = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
 
-        int actualFacingDir = facingDir;
-
-        if(WorldManager.Instance != null && WorldManager.Instance.currentWorld == WorldType.Mirror)
-        {
-            if (this.GetComponent<Player>() == null)
-            {
-                actualFacingDir = -facingDir;
-            }
-        }
 
         if (secondaryWallCheck != null)
         {
-        wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * actualFacingDir, wallCheckDistance, whatIsGround)
-                    && Physics2D.Raycast(secondaryWallCheck.position, Vector2.right * actualFacingDir, wallCheckDistance, whatIsGround);
+            wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround)
+                        && Physics2D.Raycast(secondaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         }
         else
-            wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * actualFacingDir, wallCheckDistance, whatIsGround);
-
+            wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
     }
 
-    protected virtual void OnDrawGizmos() 
+    protected virtual void OnDrawGizmos()
     {
-        int actualFacingDir = facingDir;
-        if (WorldManager.Instance != null && WorldManager.Instance.currentWorld == WorldType.Mirror)
-        {
-            actualFacingDir = -facingDir;
-        }
 
         Gizmos.DrawLine(groundCheck.position, groundCheck.position + new Vector3(0, -groundCheckDistance));
-        Gizmos.DrawLine(primaryWallCheck.position, primaryWallCheck.position + new Vector3(wallCheckDistance * actualFacingDir, 0));
+        Gizmos.DrawLine(primaryWallCheck.position, primaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
 
         if (secondaryWallCheck != null)
         {
-            Gizmos.DrawLine(secondaryWallCheck.position, secondaryWallCheck.position + new Vector3(wallCheckDistance * actualFacingDir, 0));
+            Gizmos.DrawLine(secondaryWallCheck.position, secondaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
         }
     }
 
-    
+
 }

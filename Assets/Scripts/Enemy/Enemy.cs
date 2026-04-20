@@ -94,21 +94,16 @@ public class Enemy : Entity
 
         return player;
     }
-    
 
-    
 
-    
+
+
+
     public RaycastHit2D PlayerDetected()
     {
-        int actualFacingDir = facingDir;
-        if (WorldManager.Instance != null && WorldManager.Instance.isMirrored)
-        {
-            actualFacingDir = -facingDir;
-        }
-
-        RaycastHit2D hit = 
-            Physics2D.Raycast(playerCheck.position, Vector2.right * actualFacingDir, playerCheckDistance, whatIsPlayer | whatIsGround);
+        // 【删除】actualFacingDir 判断，直接用 facingDir
+        RaycastHit2D hit =
+            Physics2D.Raycast(playerCheck.position, Vector2.right * facingDir, playerCheckDistance, whatIsPlayer | whatIsGround);
 
         if (hit.collider == null || hit.collider.gameObject.layer != LayerMask.NameToLayer("Player"))
             return default;
@@ -118,20 +113,14 @@ public class Enemy : Entity
     protected override void OnDrawGizmos()
     {
         base.OnDrawGizmos();
-        int actualFacingDir = facingDir;
 
-        // 加上 Application.isPlaying，防止在编辑模式下报错
-        if (Application.isPlaying && WorldManager.Instance != null && WorldManager.Instance.isMirrored)
-        {
-            actualFacingDir = -facingDir;
-        }
-
+        // 【删除】这里也有 actualFacingDir 镜像判断，删掉，直接用 facingDir
         Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (actualFacingDir * playerCheckDistance), playerCheck.position.y));
+        Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (facingDir * playerCheckDistance), playerCheck.position.y));
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (actualFacingDir * attackDistance), playerCheck.position.y));
+        Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (facingDir * attackDistance), playerCheck.position.y));
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (actualFacingDir * minAbleRetreatDistance), playerCheck.position.y));
+        Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (facingDir * minAbleRetreatDistance), playerCheck.position.y));
     }
 
     private void OnEnable()

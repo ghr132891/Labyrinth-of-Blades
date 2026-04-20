@@ -22,7 +22,8 @@ public class Player_DropManager : Entity_DropManager
         {
             if(Random.Range(0,100) < chanceToLooseItem)
             {
-                CreateItemDrop(item.itemData);
+                // 不让物品爆在地上
+                //CreateItemDrop(item.itemData);
                 inventory.RemoveFullStack(item);
             }
         }
@@ -33,7 +34,8 @@ public class Player_DropManager : Entity_DropManager
             {
                 var item = equip.GetEquipedItem();
 
-                CreateItemDrop(item.itemData);
+                //删掉物理掉落
+                //CreateItemDrop(item.itemData);
                 inventory.UnequipItem(item);
                 inventory.RemoveFullStack(item);
             }

@@ -12,13 +12,7 @@ public class Entity_DropManager : MonoBehaviour
     [SerializeField] private float maxRarityAmount = 1200;
     [SerializeField] private int maxItemsToDrop = 3;
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            DropItems();
-        }
-    }
+   
 
     public virtual void DropItems()
     {

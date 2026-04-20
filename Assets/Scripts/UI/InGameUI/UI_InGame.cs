@@ -21,6 +21,11 @@ public class UI_InGame : MonoBehaviour
     private UI_QuickItemOption[] quickItemOptions;
     private UI_QuickItemSlot[] quickItemSlots;
 
+
+    private void Update()
+    {
+        Debug.Log(player.health.GetCurrentHealth());
+    }
     private void Awake()
     {
         maxWidth = healthRect.sizeDelta.x;
@@ -32,7 +37,10 @@ public class UI_InGame : MonoBehaviour
         quickItemSlots = GetComponentsInChildren<UI_QuickItemSlot>();
 
         player = FindFirstObjectByType<Player>();
+
         player.health.OnHealthUpdate += UpdateHealthBar;
+        // 【核心修复】：不要干等事件触发，初始化时主动拉取一次最新血量！
+        UpdateHealthBar();
 
         inventory = player.inventory;
         inventory.OnInventoryChange += UpdateQuickSlotUI;
@@ -45,8 +53,8 @@ public class UI_InGame : MonoBehaviour
     {
         Inventory_Item[] quickItems = inventory.quickItems;
 
-        for (int i = 0; i < quickItems.Length; i++)
-            quickItemSlots[i].UpdateQuickSlotUI(quickItems[i]);
+        //for (int i = 0; i < quickItems.Length; i++)
+            //quickItemSlots[i].UpdateQuickSlotUI(quickItems[i]);
 
 ;    }
 
@@ -95,8 +103,10 @@ public class UI_InGame : MonoBehaviour
     private void UpdateHealthBar()
     {
         float currentHealth = Mathf.RoundToInt(player.health.GetCurrentHealth());
+        currentHealth = Mathf.Max(0, currentHealth); // 【核心修复】：限制血量不低于 0
         float maxHelath = player.stats.GetMaxHealth();
         float baseHealthLength = 200;
+
         float sizePercent = currentHealth / baseHealthLength;
         float targetWidth = maxWidth * sizePercent;
         float sizeDifference = Mathf.Abs(maxHelath - healthRect.sizeDelta.x);
@@ -105,7 +115,7 @@ public class UI_InGame : MonoBehaviour
             healthRect.sizeDelta = new Vector2(maxHelath, healthRect.sizeDelta.y);
 
         healthText.text = currentHealth + "/" + maxHelath;
-        healthSlider.value = player.health.GetHealthPercent();
+        healthSlider.value = Mathf.Max(0, player.health.GetHealthPercent());
     }
 
 }

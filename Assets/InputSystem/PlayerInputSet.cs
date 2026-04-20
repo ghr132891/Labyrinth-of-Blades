@@ -302,17 +302,6 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""0082add3-eb4a-4056-8f06-730d0b8f3482"",
-                    ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";keyboard & Mouse"",
-                    ""action"": ""Spell"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""31d7fb60-8079-4ea0-ba38-2d67ae9174cc"",
                     ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
@@ -335,45 +324,12 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""853c7ec7-e106-496d-8c6c-3ba85e086204"",
-                    ""path"": ""<Keyboard>/r"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";keyboard & Mouse"",
-                    ""action"": ""UltimateSpell"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""06a3221b-6d47-43cd-8ece-7d46dd33c948"",
                     ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";keyboard & Mouse"",
                     ""action"": ""Interact"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""604f7e43-e334-4b31-bf97-13c4bfa6c3ba"",
-                    ""path"": ""<Keyboard>/1"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";keyboard & Mouse"",
-                    ""action"": ""QuickItemSlot_1"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""ae54bd26-2dfe-46c9-a698-beed27c40b10"",
-                    ""path"": ""<Keyboard>/2"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";keyboard & Mouse"",
-                    ""action"": ""QuickItemSlot_2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -429,39 +385,6 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";keyboard & Mouse"",
                     ""action"": ""OptionsUI"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""e1e2e85d-bbc5-427a-8de4-bb2eac96903d"",
-                    ""path"": ""<Keyboard>/l"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";keyboard & Mouse"",
-                    ""action"": ""SkillTreeUI"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""1eef4d01-dcc5-48f3-8dd9-d67a737b2191"",
-                    ""path"": ""<Keyboard>/c"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";keyboard & Mouse"",
-                    ""action"": ""InventoryUI"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""2a54af70-27f0-4f14-910a-9a790009ffd1"",
-                    ""path"": ""<Keyboard>/leftCtrl"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";keyboard & Mouse"",
-                    ""action"": ""AlternativeInput"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }

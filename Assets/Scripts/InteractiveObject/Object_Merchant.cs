@@ -15,11 +15,12 @@ public class Object_Merchant : Object_NPC, IInteractable
     {
         base.Update();
 
-        if (Input.GetKeyDown(KeyCode.Z))
+       /* if (Input.GetKeyDown(KeyCode.Z))
         {
             merchant.FillShopList();
             ui.OpenMerchantUI(true);
         }
+       */
     }
     public void Interact()
     {

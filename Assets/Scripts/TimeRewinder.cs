@@ -3,7 +3,8 @@ using UnityEngine;
 
 public struct PointInTime
 {
-    public Vector3 localPosition;
+    // 【修复1】：必须记录全局坐标(position)，绝对不能用局部坐标！
+    public Vector3 position;
     public Vector2 velocity;
     public int facingDir;
 }
@@ -11,16 +12,23 @@ public struct PointInTime
 public class TimeRewinder : MonoBehaviour
 {
     [Header("倒流设置")]
+    [Tooltip("最多记录多少秒的物理轨迹")]
     public float recordTime = 5f;
+
+    [Header("回放控制")]
+    [Tooltip("1.0表示自然跟随时间流速回放；数值越大倒放越快")]
+    public float rewindSpeedMultiplier = 1.0f;
+
     private List<PointInTime> pointsInTime;
     private Rigidbody2D rb;
     private Entity entity;
 
     private bool isDead;
     private bool isRewinding = false;
-
-    // 【新增】：用于记录真实的刚体类型，避免 isKinematic 警告
     private RigidbodyType2D originalBodyType;
+
+    private float recordInterval = 0.02f;
+    private float frameAccumulator = 0f;
 
     void Start()
     {
@@ -34,8 +42,7 @@ public class TimeRewinder : MonoBehaviour
 
     private void CheckTimeWorld(WorldType worldType)
     {
-        if (isDead)
-            return;
+        if (isDead) return;
 
         if (worldType == WorldType.Time)
             StartRewind();
@@ -45,67 +52,72 @@ public class TimeRewinder : MonoBehaviour
 
     void FixedUpdate()
     {
-        // 【核心修复2：死亡判定】
-        // 这里需要对接你项目的真实死亡判定。
-        // 根据你之前的代码架构，你的 Entity 应该有类似 isDead 的属性，或者你可以通过判断它的状态
-        // 伪代码：如果 (entity.isDead == true) 或者 (血量 <= 0)
-        // 请把下方判断换成你项目中真实的死亡检测！比如 entity.stats.isDead 或者 GetComponent<Enemy_Health>().currentHealth <= 0
-        //if (entity != null && entity.isKnocked == false) // 假设我们先用伪逻辑占位
-        //{
-            // 如果你需要具体的死亡判断代码，告诉我你的 Entity.cs 里是怎么写死亡的！
-        //}
-
-        // 如果已经判定死亡，直接退出，不记录也不倒流
         if (isDead) return;
 
         if (isRewinding)
-            Rewind();
-        else
-            Record();
-    }
-
-    public void SetDead()
-    {
-        isDead = true;
-        pointsInTime.Clear(); // 清空历史记录
-        if (rb != null)
-            rb.bodyType = originalBodyType; // 恢复物理状态
-    }
-
-    void Rewind()
-    {
-        if (pointsInTime.Count > 0)
         {
-            PointInTime pointInTime = pointsInTime[0];
-
-            transform.localPosition = pointInTime.localPosition;
-            if (entity != null && pointInTime.facingDir != entity.facingDir)
+            // ======== 【核心新增：时停拦截】 ========
+            // 如果在时间世界中按下了时停，直接冻结当前状态，不弹出录像帧！
+            if (WorldManager.Instance != null && WorldManager.Instance.isTimeStopped)
             {
-                entity.Flip();
+                // 确保速度归零，稳稳悬停
+                if (rb != null) rb.linearVelocity = Vector2.zero;
+                return;
+            }
+            // ========================================
+
+            frameAccumulator += rewindSpeedMultiplier;
+
+            while (frameAccumulator >= 1f && pointsInTime.Count > 0)
+            {
+                ApplyRewindFrame();
+                frameAccumulator -= 1f;
             }
 
-            pointsInTime.RemoveAt(0);
-        }
-        else
-        {
-            // 【修复】：使用 bodyType 替代 isKinematic
-            if (rb != null)
+            if (pointsInTime.Count == 0 && rb != null)
             {
                 rb.linearVelocity = Vector2.zero;
                 rb.bodyType = RigidbodyType2D.Kinematic;
             }
         }
+        else
+        {
+            Record();
+        }
+    }
+
+    private void ApplyRewindFrame()
+    {
+        PointInTime pointInTime = pointsInTime[0];
+
+        if (rb != null && rb.bodyType == RigidbodyType2D.Kinematic)
+        {
+            // 使用世界坐标 MovePosition
+            rb.MovePosition(pointInTime.position);
+        }
+        else
+        {
+            transform.position = pointInTime.position;
+        }
+
+        if (entity != null && pointInTime.facingDir != entity.facingDir)
+        {
+            entity.Flip();
+        }
+
+        pointsInTime.RemoveAt(0);
     }
 
     void Record()
     {
-        if (pointsInTime.Count > Mathf.Round(recordTime / Time.fixedDeltaTime))
+        if (pointsInTime.Count > Mathf.Round(recordTime / recordInterval))
         {
             pointsInTime.RemoveAt(pointsInTime.Count - 1);
         }
 
         PointInTime point = new PointInTime();
-        point.localPosition = transform.localPosition;
+        // 记录世界坐标
+        point.position = transform.position;
         point.velocity = rb != null ? rb.linearVelocity : Vector2.zero;
         point.facingDir = entity != null ? entity.facingDir : 1;
 
@@ -114,11 +126,11 @@ public class TimeRewinder : MonoBehaviour
 
     public void StartRewind()
     {
-        if (isDead)
-            return;
+        if (isDead) return;
 
         isRewinding = true;
-        // 【修复】：记录原始状态，并使用 bodyType 替代 isKinematic
+        frameAccumulator = 0f;
+
         if (rb != null)
         {
             originalBodyType = rb.bodyType;
@@ -130,13 +142,21 @@ public class TimeRewinder : MonoBehaviour
     public void StopRewind()
     {
         isRewinding = false;
-        // 【修复】：还原原始的 bodyType
+
         if (rb != null)
         {
             rb.bodyType = originalBodyType;
             if (pointsInTime.Count > 0) rb.linearVelocity = pointsInTime[0].velocity;
         }
         if (entity != null) entity.enabled = true;
+    }
+
+    public void SetDead()
+    {
+        isDead = true;
+        pointsInTime.Clear();
+        if (rb != null)
+            rb.bodyType = originalBodyType;
     }
 
     private void OnDestroy()

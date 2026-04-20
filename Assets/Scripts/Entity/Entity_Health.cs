@@ -7,6 +7,7 @@ public class Entity_Health : MonoBehaviour, IDamagable
 {
     public event Action OnTakingDamage;
     public event Action OnHealthUpdate;
+    public event Action OnDie;
 
     private Slider healthBar;
     private Entity_VFX entityVFX;
@@ -147,7 +148,15 @@ public class Entity_Health : MonoBehaviour, IDamagable
     {
         isDead = true;
         entity.EntityDeath();
-        dropManager?.DropItems();
+        //dropManager?.DropItems();
+        OnDie?.Invoke();
+    }
+
+    public void Revive()
+    {
+        isDead = false;
+        canTakeDamage = true;
+        SetHealthToPercent(1f); // 强行恢复 100% 的血量，并且这句代码自带了 UI 刷新通知！
     }
 
     public float GetCurrentHealth() => currentHealth; 

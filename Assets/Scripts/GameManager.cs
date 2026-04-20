@@ -44,6 +44,13 @@ public class GameManager : MonoBehaviour,ISaveable
 
     public void ChangeScene(string sceneName, RespawnType respawnType)
     {
+        // 在保存游戏之前，如果发现玩家是死的，立刻强行救活！
+        // 这样存进存档里的就是一个“满血活人”，完美避开读档时的 0 血覆盖 Bug！
+        if (Player.instance != null && Player.instance.health.isDead)
+        {
+            Player.instance.health.Revive();
+        }
+
         SaveManager.instance.SaveGame();
 
         Time.timeScale = 1;
@@ -74,6 +81,7 @@ public class GameManager : MonoBehaviour,ISaveable
         if (player == null)
             yield break;
 
+        player.health.Revive();
         Vector3 position = GetNewPlayerPosition(respawnType);
 
         if (position != Vector3.zero)
