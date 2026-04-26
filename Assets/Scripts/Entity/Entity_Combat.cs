@@ -26,7 +26,7 @@ public class Entity_Combat : MonoBehaviour
 
     public void PerformAttack()
     {
-        foreach (var target in GetDetectedColliders())
+        foreach (var target in GetDetectedColliders(whatIsTarget))
         {
             IDamagable damageble = target.GetComponent<IDamagable>();
 
@@ -55,35 +55,39 @@ public class Entity_Combat : MonoBehaviour
         }
     }
 
-    //public void ApplyStatusEffect(Transform target, ElementType element,float scaleFactor = 1)
-    //{
-    //    Entity_StatusHandler statusHandler = target.GetComponent<Entity_StatusHandler>();
-
-    //    if (statusHandler == null)
-    //        return;
-
-    //    if (element == ElementType.Ice && statusHandler.CanBeApplied(ElementType.Ice))
-    //        statusHandler.ApplyChillEffect(defaultDuration, chillSlowMultiplier);
-
-    //    if (element == ElementType.Fire && statusHandler.CanBeApplied(ElementType.Fire))
-    //    {
-    //        scaleFactor = fireScale;
-    //        float fireDamage = stats.offense.fireDamage.GetValue() * scaleFactor;
-    //        statusHandler.ApplyBurnedEffect(defaultDuration, fireDamage);
-    //    }
-
-    //    if(element == ElementType.Lightning && statusHandler.CanBeApplied(ElementType.Lightning))
-    //    {
-    //        scaleFactor = lightningScale;
-    //        float lightningDamage = stats.offense.lightningDamage.GetValue() * scaleFactor;
-    //        statusHandler.ApplyElectrifyEffect(defaultDuration, lightningDamage,electrifyEfectBuildUp );
-
-    //    }
-    //}
-
-    protected Collider2D[] GetDetectedColliders()
+    public void PerformAttackOnTarget(Transform target)
     {
-        return Physics2D.OverlapCircleAll(targetCheck.position, targetCheckRadius, whatIsTarget);
+        
+            IDamagable damageble = target.GetComponent<IDamagable>();
+
+            if (damageble == null)
+                return;
+
+            AttackData attackData = stats.GetAttackData(basicAttackScale);
+            Entity_StatusHandler entity_StatusHandler = target.GetComponent<Entity_StatusHandler>();
+
+
+            float phyiscalDamage = attackData.phyiscalDamage;
+            float elementalDamage = attackData.elementDamage;
+            ElementType element = attackData.element;
+
+            bool targetGotHit = damageble.TakeDamage(phyiscalDamage, elementalDamage, element, transform);
+
+            if (element != ElementType.None)
+                entity_StatusHandler?.ApplyStatusEffect(element, attackData.effectData);
+
+            if (targetGotHit)
+            {
+                OnDoingPhysiclDamage?.Invoke(phyiscalDamage);
+                vfx.CreatOnHitVFX(target.transform, attackData.isCrit, element);
+            }
+
+        
+    }
+
+    protected Collider2D[] GetDetectedColliders(LayerMask whatToDetect)
+    {
+        return Physics2D.OverlapCircleAll(targetCheck.position, targetCheckRadius, whatToDetect);
     }
 
     private void OnDrawGizmos()

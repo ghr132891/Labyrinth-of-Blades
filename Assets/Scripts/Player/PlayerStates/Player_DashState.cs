@@ -22,6 +22,7 @@ public class Player_DashState : PlayerState
         originalGravityScale = rb.gravityScale;
         rb.gravityScale = 0;
         player.health.SetCanTakeDamage(false);
+        player.gameObject.layer = LayerMask.NameToLayer("UnTargetable");
     }
 
     public override void Update()

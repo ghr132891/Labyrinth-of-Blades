@@ -6,6 +6,7 @@ public class Enemy : Entity
     public Entity_Stats stats { get; private set; }
 
     public Enemy_Health health { get; private set; }
+    public Entity_Combat combat { get; private set; }
     public Enemy_IdleState idleState;
     public Enemy_MoveState moveState;
     public Enemy_AttackState attackState;
@@ -25,13 +26,13 @@ public class Enemy : Entity
 
     [Header("Stunned State Details")]
     public float stunnedDuration = 1;
-    public Vector2 stunnedVelocity = new Vector2(7,7);
+    public Vector2 stunnedVelocity = new Vector2(7, 7);
     [SerializeField] protected bool canBeStunned;
 
     [Header("Movement Details")]
     public float idleTime = 2;
     public float moveSpeed = 1.3f;
-    [Range(0,2)]
+    [Range(0, 2)]
     public float moveAnimSpeedMultplier = 1;
 
     [Header("Player Detection")]
@@ -49,17 +50,23 @@ public class Enemy : Entity
         base.Awake();
         health = GetComponent<Enemy_Health>();
         stats = GetComponent<Entity_Stats>();
+        combat = GetComponent<Entity_Combat>();
+
+    }
+
+    public virtual void SpecialAttack()
+    {
 
     }
     protected override IEnumerator SlowDownEntityCo(float duration, float slowMultiplier)
     {
-       
-        activeSlowMultiplier = 1- slowMultiplier;     
-        anim.speed =  anim.speed * activeSlowMultiplier;
 
-        yield return new WaitForSeconds(duration); 
+        activeSlowMultiplier = 1 - slowMultiplier;
+        anim.speed = anim.speed * activeSlowMultiplier;
 
-        StopSlowDown();      
+        yield return new WaitForSeconds(duration);
+
+        StopSlowDown();
     }
 
     public override void StopSlowDown()
@@ -82,7 +89,7 @@ public class Enemy : Entity
 
     public void DestoryGameObjectWithDealy(float delay = 10)
     {
-        Destroy(gameObject,delay);
+        Destroy(gameObject, delay);
     }
 
     public void TryEnterBattleState(Transform player)
@@ -96,7 +103,7 @@ public class Enemy : Entity
 
     public Transform GetPlayerReference()
     {
-        if(player == null)
+        if (player == null)
             player = PlayerDetected().transform;
 
         return player;

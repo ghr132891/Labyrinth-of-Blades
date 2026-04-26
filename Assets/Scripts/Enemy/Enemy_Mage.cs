@@ -1,15 +1,11 @@
 using UnityEngine;
 
-public class Enemy_Archer : Enemy
+public class Enemy_Mage : Enemy,ICounterable
 {
     public bool CanBeCountered { get => canBeStunned; }
-    public Enemy_ArcherBattleState archerBattleState { get; private set; }
 
-
-    [Header("Archer Specifics")]
-    [SerializeField] private GameObject arrowPrefab;
-    [SerializeField] private Transform arrowStartPoint;
-    [SerializeField] private float arrowSpeed = 8f;
+    [Header("Mage Specifics")]
+    [SerializeField] private bool hasStunRecoveryAnimation = true;
 
     protected override void Awake()
     {
@@ -18,23 +14,17 @@ public class Enemy_Archer : Enemy
         idleState = new Enemy_IdleState(this, stateMachine, "idle");
         moveState = new Enemy_MoveState(this, stateMachine, "move");
         attackState = new Enemy_AttackState(this, stateMachine, "attack");
+        battleState = new Enemy_BattleState(this, stateMachine, "battle");
         deadState = new Enemy_DeadState(this, stateMachine, "idle");
         stunnedState = new Enemy_StunnedState(this, stateMachine, "stunned");
 
-        archerBattleState = new Enemy_ArcherBattleState(this, stateMachine, "battle");
-        battleState = archerBattleState;
+        anim.SetBool("hasStunRecovery", hasStunRecoveryAnimation);
     }
 
     protected override void Start()
     {
         base.Start();
         stateMachine.Initialize(idleState);
-    }
-
-    public override void SpecialAttack()
-    {
-        GameObject newArrow = Instantiate(arrowPrefab, arrowStartPoint.position, Quaternion.identity);
-        newArrow.GetComponent<Enemy_ArcherArrow>().SetUpArrow(arrowSpeed * facingDir,combat);
     }
 
     public void HandleCounter()

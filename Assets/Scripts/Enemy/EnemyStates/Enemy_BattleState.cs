@@ -5,7 +5,7 @@ public class Enemy_BattleState : EnemyState
     protected Transform player;
     protected Transform lastTarget;
     protected float lastTimeInBattle;
-    protected float lastTimeAttacked;
+    protected float lastTimeAttacked = float.NegativeInfinity;
     
     public Enemy_BattleState(Enemy enemy, StateMachine stateMachine, string animBoolName) : base(enemy, stateMachine, animBoolName)
     {
@@ -22,16 +22,19 @@ public class Enemy_BattleState : EnemyState
 
         if (ShouldRetreat())
         {
-            // 【修改点】：不要直接用 rb.linearVelocity 赋值，统一使用 enemy.SetVelocity！
-            // 这样撤退也能应用底层反转和翻转贴图逻辑
-            enemy.SetVelocity((enemy.reteratVelocity.x * enemy.activeSlowMultiplier) * -DirectionToPlayer(), enemy.reteratVelocity.y);
-            //rb.linearVelocity = new Vector2((enemy.reteratVelocity.x * enemy.activeSlowMultiplier) * -DirectionToPlayer(), enemy.reteratVelocity.y);
-
-            enemy.HandleFlip(DirectionToPlayer());
+            ShortRetreat();
         }
 
         
 
+    }
+    protected void ShortRetreat()
+    {
+        float x = (enemy.reteratVelocity.x * enemy.activeSlowMultiplier) * -DirectionToPlayer();
+        float y = enemy.reteratVelocity.y;
+
+        rb.linearVelocity = new Vector2(x, y);
+        enemy.HandleFlip(DirectionToPlayer());
     }
 
     public override void Update()
@@ -57,7 +60,7 @@ public class Enemy_BattleState : EnemyState
         else
         {
             float xVelocity = enemy.canChasePlayer ? enemy.GetBattleMoveSpeed() : 0.0001f;
-            enemy.SetVelocity(xVelocity * DistanceToPlayer(), rb.linearVelocity.y);
+            enemy.SetVelocity(xVelocity * DirectionToPlayer(), rb.linearVelocity.y);
         }
 
     }
@@ -108,12 +111,6 @@ public class Enemy_BattleState : EnemyState
 
         int dir = player.position.x > enemy.transform.position.x ? 1 : -1;
 
-        // 【删除】底下这段代码！
-        /* if (WorldManager.Instance != null && WorldManager.Instance.currentWorld == WorldType.Mirror)
-        {
-            dir = -dir;
-        }
-        */
 
         return dir;
     }
