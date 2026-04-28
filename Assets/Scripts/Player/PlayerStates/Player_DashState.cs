@@ -47,6 +47,7 @@ public class Player_DashState : PlayerState
         rb.gravityScale = originalGravityScale;
         player.SetVelocity(0, 0);
         player.health.SetCanTakeDamage(true);
+        player.gameObject.layer = LayerMask.NameToLayer("Player");
     }
 
     private void CancelDashIfNeeded()

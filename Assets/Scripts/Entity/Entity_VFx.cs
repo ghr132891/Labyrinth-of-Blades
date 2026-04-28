@@ -1,10 +1,17 @@
 using System.Collections;
 using UnityEngine;
+using Unity.VisualScripting;
 
 public class Entity_VFX : MonoBehaviour
 {
     protected SpriteRenderer sr;
     private Entity entity;
+
+    [Header("Image Echo VFX")]
+    [Range(0.01f, .2f)]
+    [SerializeField] private float imageEchointerval = 0.05f;
+    [SerializeField] private GameObject imageEchoPrefab;
+    private Coroutine imageEchoCo;
 
     [Header("On Taking Damage VFX")]
     [SerializeField] private Material onDamageMaterial;
@@ -31,6 +38,44 @@ public class Entity_VFX : MonoBehaviour
 
     }
 
+
+    public void DoImageEchoEffect(float duration)
+    {
+        StopImageEchoEffect();
+        imageEchoCo = StartCoroutine(ImageEchoEffectCo(duration));
+
+    }
+
+    public void StopImageEchoEffect()
+    {
+        if (imageEchoCo != null)
+            StopCoroutine(imageEchoCo);
+    }
+
+    private IEnumerator ImageEchoEffectCo(float duration)
+    {
+        float timeTracked = 0;
+        while (timeTracked < duration)
+        {
+            CreatImageEcho();
+            yield return new WaitForSeconds(imageEchointerval);
+            timeTracked += imageEchointerval;
+        }
+
+    }
+
+    private void CreatImageEcho()
+    {
+        Vector3 position = entity.anim.transform.position;
+        float scale = entity.anim.transform.localScale.x;
+
+        GameObject imageEcho = Instantiate(imageEchoPrefab, position, transform.rotation);
+
+        imageEcho.transform.localScale = new Vector3(scale, scale, scale);
+        imageEcho.GetComponentInChildren<SpriteRenderer>().sprite = sr.sprite;
+
+
+    }
     public void StopAllVFX()
     {
         StopAllCoroutines();
@@ -48,9 +93,6 @@ public class Entity_VFX : MonoBehaviour
 
         if (element == ElementType.Lightning)
             StartCoroutine(PlayStatusVFXCo(duration, shockVFX));
-
-
-
     }
     private IEnumerator PlayStatusVFXCo(float duration, Color effectColor)
     {
@@ -77,7 +119,7 @@ public class Entity_VFX : MonoBehaviour
     }
 
 
-    public void CreatOnHitVFX(Transform target, bool isCrit,ElementType element)
+    public void CreatOnHitVFX(Transform target, bool isCrit, ElementType element)
     {
         GameObject hitPrefab = isCrit ? critHitVFX : hitVFX;
         GameObject vfx = Instantiate(hitPrefab, target.position, Quaternion.identity);
@@ -88,7 +130,7 @@ public class Entity_VFX : MonoBehaviour
     }
 
 
-    
+
 
     public Color GetElementColor(ElementType element)
     {
