@@ -1,0 +1,72 @@
+[33mee56344[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Revert "Merge branch 'pr/1'"
+[33m25f3531[m Merge branch 'pr/1'
+[33mc6bca72[m[33m ([m[1;31morigin/pr/1[m[33m, [m[1;32mpr/1[m[33m)[m render improvement
+[33mbec0165[m Update README.md
+[33me85d28f[m Remove introductory line from README
+[33mccd8bd7[m 5.20_6.19
+[33m6fb6471[m 5.20_last
+[33m3c80510[m Revert "5.19.22.52"
+[33m1a24dae[m 5.19.22.52
+[33m59ff9a2[m 5.19.22.46
+[33m32059a1[m test
+[33mbe12035[m scene 1 2 3 light
+[33m19b9668[m 5.19.18.57
+[33mc0233cc[m 123
+[33m22b8795[m 5,19,5,35
+[33m9fa31f2[m 5.19 5:30
+[33m5f3fc56[m 5.19_5.22
+[33m39621a8[m scene3
+[33m7202e6a[m 5.19_1.57
+[33me84538a[m 5.18 22:45
+[33mb585201[m 5.18_22.09
+[33m83faa84[m 5.18_20.28
+[33m757d8b5[m 123
+[33m1053861[m demo
+[33md9243c1[m DEmo
+[33maf9d7f2[m Merge pull request #1 from Fervent-Tempo/main
+[33m4fd86ec[m 贴图替换
+[33m1c310cd[m[33m ([m[1;31morigin/Other[m[33m)[m 5.18
+[33m6b50c1a[m 5.17
+[33m299d4d9[m 5.16
+[33mf03ff68[m 5.15
+[33mbb1eb23[m 5.14
+[33m4d50967[m 5.13
+[33m78a9be5[m 5.12
+[33md8068cb[m Mage Improvement
+[33m2a6d215[m End Music System
+[33m852a096[m Global Music
+[33mb3ab163[m Entity Music
+[33m9632eec[m Audio
+[33m647062e[m Archer/Mage
+[33mf284c01[m Archer
+[33med7f3b0[m The Making of Mechanism Logic
+[33mf0b5f8e[m Fix
+[33mb49e8db[m Scene transition optimization
+[33m1e6ae3b[m Time World Building
+[33m7c879b6[m Change Scene
+[33m6125c2d[m 4.15/19.44
+[33mf96255c[m Scene Manager Over
+[33mf720cc5[m Prepare Levels
+[33mfe4fad4[m Save System
+[33me335bc6[m UI Options and UI Optimization
+[33m54a973f[m Quick Item Slot
+[33m2b18650[m 1.31
+[33mfa5c096[m Over Merchant
+[33m0bdec18[m Merchant Interact
+[33m77582ac[m Over Inventory
+[33m0d6e393[m using Buff
+[33m2ce094f[m Stat Tips
+[33md5b27e5[m Inventory
+[33m123bf1f[m Complete all skills and organization
+[33m6ad50c4[m Merge branch 'main' of https://github.com/ghr132891/RPG-Game
+[33m272a9d3[m  To impove slowdown and domain skill
+[33madeb9a5[m Create README.md
+[33m7b57d08[m Time Echo
+[33mb4bd530[m Time echo attack upgrade
+[33m15af0db[m Time Echo
+[33mf0b650d[m SwordSpin
+[33m1364737[m 12.8/SwordPierce
+[33m5a19b57[m repair skill vfx
+[33m648e1c2[m first commit
+[33mb905dae[m Upload Unity project
+[33m52a5b87[m Setup Git LFS for Unity
